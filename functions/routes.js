@@ -6,10 +6,10 @@ router.get("/", async (req, res) => {
     const filepath = path.join(__dirname, './data.txt');
     fs.readFile(filepath, 'utf8', (err, data) => {
         if (err) {
-            return res.status(404).send('File not found error');
+            return res.status(404).send('File Error');
         }
         res.json({
-            message: 'Succccesss',
+            message: 'Success',
             value: data.split("\n")
         })
     });

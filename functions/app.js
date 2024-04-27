@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const rootRouter = require('../routes')
+const rootRouter = require('./routes')
 
 app.use("/.netlify/functions/app", rootRouter)
 
