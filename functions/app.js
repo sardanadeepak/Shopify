@@ -21,4 +21,5 @@ const connect = () => {
 }
 connect();
 
+// app.listen(3000)
 module.exports.handler = serverless(app);

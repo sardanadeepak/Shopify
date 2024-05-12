@@ -1,0 +1,115 @@
+.input {
+    max-width: 290px;
+    background-color: #dddbdb;
+    color: #242424;
+    padding: .15rem .5rem;
+    min-height: 40px;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    line-height: 1.15;
+    box-shadow: 0px 10px 20px -18px;
+}
+
+input:focus {
+    border-bottom: 2px solid rgb(0 107 179);
+}
+
+input:hover {
+    outline: 1px solid lightgrey;
+}
+
+#loader {
+    display: none;
+}
+
+.loader {
+    width: 50px;
+    padding: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgb(0 107 179);
+    --_m:
+        conic-gradient(#0000 10%, #000),
+        linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+    mask: var(--_m);
+    -webkit-mask-composite: source-out;
+    mask-composite: subtract;
+    animation: l3 1s infinite linear;
+}
+
+@keyframes l3 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+.button {
+    margin: 20px;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    padding-block: 0.5rem;
+    padding-inline: 1.25rem;
+    background-color: rgb(0 107 179);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffff;
+    gap: 10px;
+    font-weight: normal;
+    border: 2px solid #ffffff4d;
+    outline: none;
+    overflow: hidden;
+    font-size: 16px;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    transform: scale(1.05);
+    border-color: #fff9;
+}
+
+.button:hover .icon {
+    transform: translate(4px);
+}
+
+.button:hover::before {
+    animation: shine 1.5s ease-out infinite;
+}
+
+.button::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100%;
+    background-image: linear-gradient(120deg,
+            rgba(255, 255, 255, 0) 30%,
+            rgba(255, 255, 255, 0.8),
+            rgba(255, 255, 255, 0) 70%);
+    top: 0;
+    left: -100px;
+    opacity: 0.6;
+}
+
+@keyframes shine {
+    0% {
+        left: -100px;
+    }
+
+    60% {
+        left: 100%;
+    }
+
+    to {
+        left: 100%;
+    }
+}
