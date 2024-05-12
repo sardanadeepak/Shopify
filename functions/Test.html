@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Verification</title>
+    <script>
+        var validCodes = []
+        function loadValues() {
+            fetch("https://nimble-kataifi-8dd1e1.netlify.app/.netlify/functions/app").then(response => response.json()).then(response => {
+                validCodes = response.values
+                console.log("AI data loaded")
+            })
+        }
+        function verifyCode() {
+            console.log("Inside Verify Code")
+            var inputCode = document.getElementById("codeInput").value;
+            var messageElement = document.getElementById("verificationMessage");
+
+            if (validCodes.includes(+inputCode)) {
+                const data = { "redeemCode": +inputCode }
+                fetch("https://nimble-kataifi-8dd1e1.netlify.app/.netlify/functions/app/verifyCode", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json()).then(response => {
+                    value = response.value
+                    console.log("AI data Verified", value)
+                    if (value.value < 3) {
+                        messageElement.innerText = "Product is verified.";
+                    }
+                    else {
+                        messageElement.innerText = "Code Excedded of 3 limits.";
+                    }
+                })
+
+                messageElement.innerText = "Product is verified.";
+            }
+            else {
+                messageElement.innerText = "Product not verified.";
+            }
+        }
+        loadValues()
+    </script>
+</head>
+
+<body>
+    <h2>Enter 5-digit code:</h2> <input type="text" id="codeInput" maxlength="5"> <button
+        onclick="verifyCode()">Enter</button>
+    <p id="verificationMessage"></p>
+</body>
+
+</html>
