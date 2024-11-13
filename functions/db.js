@@ -1,19 +1,18 @@
-const mongoose = require('mongoose')
-
+const mongoose = require("mongoose");
 
 const codeSchema = new mongoose.Schema({
-    redeemCode: {
-        type: Number,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    value: {
-        type: Number,
-        required: true
-    }
-})
+  redeemCode: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  value: {
+    type: Number,
+    required: true,
+  },
+});
 
-const Code = mongoose.model('Code', codeSchema)
+const Code = mongoose.model("Code", codeSchema);
 
-module.exports = { Code }
+module.exports = { Code };

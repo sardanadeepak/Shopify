@@ -1,56 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
     <title>Product Verification</title>
     <script>
-        function verifyCode() {
-            document.getElementById("loader").style.display = "block";
-            document.getElementById("button").disabled = true
+      function resetValues() {
+        const messageElement = document.getElementsByClassName("response")[0];
+        const symbolCheck = document.getElementsByClassName("symbolCheck")[0];
+        const symbolClose = document.getElementsByClassName("symbolClose")[0];
 
-            var inputCode = document.getElementById("codeInput").value;
-            var messageElement = document.getElementById("verificationMessage");
-            const data = { "redeemCode": +inputCode }
+        messageElement.innerText = "";
+        symbolCheck.style.display = "none";
+        symbolClose.style.display = "none";
+      }
 
-            fetch("https://nimble-kataifi-8dd1e1.netlify.app/.netlify/functions/app/verifyCode", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            }).then(response => response.json()).then(response => {
-                const isVerified = response.value
-                console.log("AI data Verified", isVerified)
-                const timer = setTimeout(() => {
-                    document.getElementById("loader").style.display = "none";
-                    document.getElementById("button").disabled = false
-                    if (isVerified) {
-                        messageElement.innerText = "Product is verified.";
-                    }
-                    else {
-                        messageElement.innerText = "Product not verified.";
-                    }
-                }, 3000)
+      function verifyCode() {
+        const inputCode = document.getElementById("codeInput").value;
+        const inputEmail = document.getElementById("emailInput").value;
+        const inputPhone = document.getElementById("phoneInput").value;
 
-            })
-        }
+        const messageElement = document.getElementsByClassName("response")[0];
+        const symbolCheck = document.getElementsByClassName("symbolCheck")[0];
+        const symbolClose = document.getElementsByClassName("symbolClose")[0];
+        const loading = document.getElementsByClassName("loading")[0];
+        loading.style.visibility = "visible";
+
+        const data = {
+          redeemCode: inputCode,
+          email: inputEmail,
+          phone: inputPhone,
+        };
+
+        fetch(
+          "http://localhost:3000/.netlify/functions/app/verifyCode",
+          //"https://nimble-kataifi-8dd1e1.netlify.app/.netlify/functions/app/verifyCode",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        )
+          .then((response) => response.json())
+          .then((response) => {
+            loading.style.visibility = "hidden";
+            const isVerified = response.value;
+            if (isVerified) {
+              messageElement.innerText = "Product verified.";
+              symbolCheck.style.display = "block";
+            } else {
+              messageElement.innerText = "Product not verified.";
+              symbolClose.style.display = "block";
+            }
+
+            setTimeout(() => {
+              resetValues();
+            }, 5000);
+          })
+          .catch(() => {
+            loading.style.visibility = "hidden";
+            messageElement.innerText = "Server Error";
+          });
+      }
     </script>
-</head>
+    <style>
+      h2 {
+        color: #555;
+      }
+      p {
+        color: #555;
+        margin-top: 32px;
+      }
+      .inputContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .input {
+        width: 15rem;
+        height: 3.5rem;
+        background-color: #f5f5f5;
+        color: #242424;
+        border-radius: 10%;
+        border: none;
+        font-size: 16px;
+        padding-left: 16px;
+      }
 
-<body>
-    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center ; ">
-        <h2 style="font-family: arial;">Enter 5-digit code:</h2>
-        <input class="input" placeholder="Redeem code" type="text" id="codeInput" maxlength="5">
-        <button class="button" role="button" id="button" onclick="verifyCode()">Redeem</button>
-        <div class="loader" id="loader"></div>
+      input:focus {
+        border-bottom: 2px solid rgb(0 107 179);
+      }
 
-        <p id="verificationMessage"></p>
+      input:hover {
+        outline: 1px solid lightgrey;
+      }
 
+      .button {
+        height: 3.5rem;
+        transition: all 0.3s ease-in-out;
+        padding-inline: 1.25rem;
+        background-color: rgb(0 107 179);
+        border-radius: 10px;
+        color: #ffff;
+        font-weight: normal;
+        border: 2px solid #ffffff4d;
+        font-size: 16px;
+        margin-left: 12px;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        transform: scale(1.05);
+        border-color: #fff9;
+      }
+    </style>
+  </head>
+
+  <body style="display: flex; flex-direction: column; align-items: center">
+    <div>
+      <h2>Enter verification code</h2>
+
+      <div class="inputContainer">
+        <input
+          class="input"
+          placeholder="Enter Email"
+          type="text"
+          id="emailInput"
+        />
+        <input
+          class="input"
+          placeholder="Enter Phone"
+          type="text"
+          id="phoneInput"
+        />
+
+        <input
+          class="input"
+          placeholder="Redeem code"
+          type="text"
+          id="codeInput"
+        />
+        <button class="button" role="button" id="button" onclick="verifyCode()">
+          Redeem
+        </button>
+
+        <div style="width: 5rem; height: 100%; display: block">
+          <i
+            class="material-icons md-48 symbolClose"
+            style="
+              color: red;
+              font-size: 32px;
+              display: none;
+              margin-left: 24px;
+            "
+            >close</i
+          >
+          <i
+            class="material-icons symbolCheck"
+            style="
+              color: green;
+              font-size: 32px;
+              display: none;
+              margin-left: 24px;
+            "
+            >check</i
+          >
+        </div>
+      </div>
+
+      <p class="response"></p>
+      <p class="loading" style="visibility: hidden">Loading ...</p>
     </div>
-
-</body>
-
+  </body>
 </html>
