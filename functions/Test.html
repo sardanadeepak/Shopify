@@ -8,67 +8,6 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <title>Product Verification</title>
-    <script>
-      function resetValues() {
-        const messageElement = document.getElementsByClassName("response")[0];
-        const symbolCheck = document.getElementsByClassName("symbolCheck")[0];
-        const symbolClose = document.getElementsByClassName("symbolClose")[0];
-
-        messageElement.innerText = "";
-        symbolCheck.style.display = "none";
-        symbolClose.style.display = "none";
-      }
-
-      function verifyCode() {
-        const inputCode = document.getElementById("codeInput").value;
-        const inputEmail = document.getElementById("emailInput").value;
-        const inputPhone = document.getElementById("phoneInput").value;
-
-        const messageElement = document.getElementsByClassName("response")[0];
-        const symbolCheck = document.getElementsByClassName("symbolCheck")[0];
-        const symbolClose = document.getElementsByClassName("symbolClose")[0];
-        const loading = document.getElementsByClassName("loading")[0];
-        loading.style.visibility = "visible";
-
-        const data = {
-          redeemCode: inputCode,
-          email: inputEmail,
-          phone: inputPhone,
-        };
-
-        fetch(
-          "http://localhost:3000/.netlify/functions/app/verifyCode",
-          //"https://nimble-kataifi-8dd1e1.netlify.app/.netlify/functions/app/verifyCode",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        )
-          .then((response) => response.json())
-          .then((response) => {
-            loading.style.visibility = "hidden";
-            const isVerified = response.value;
-            if (isVerified) {
-              messageElement.innerText = "Product verified.";
-              symbolCheck.style.display = "block";
-            } else {
-              messageElement.innerText = "Product not verified.";
-              symbolClose.style.display = "block";
-            }
-
-            setTimeout(() => {
-              resetValues();
-            }, 5000);
-          })
-          .catch(() => {
-            loading.style.visibility = "hidden";
-            messageElement.innerText = "Server Error";
-          });
-      }
-    </script>
     <style>
       h2 {
         color: #555;
@@ -87,7 +26,7 @@
         height: 3.5rem;
         background-color: #f5f5f5;
         color: #242424;
-        border-radius: 10%;
+        margin-top: 12px;
         border: none;
         font-size: 16px;
         padding-left: 16px;
@@ -103,7 +42,9 @@
 
       .button {
         height: 3.5rem;
-        transition: all 0.3s ease-in-out;
+        width: 100%;
+        opacity: 0.5;
+        /* transition: all 0.3s ease-in-out; */
         padding-inline: 1.25rem;
         background-color: rgb(0 107 179);
         border-radius: 10px;
@@ -111,13 +52,17 @@
         font-weight: normal;
         border: 2px solid #ffffff4d;
         font-size: 16px;
-        margin-left: 12px;
-        cursor: pointer;
+        margin-top: 12px;
+        cursor: not-allowed;
       }
 
-      .button:hover {
+      /* .button:hover {
         transform: scale(1.05);
         border-color: #fff9;
+      } */
+
+      .response {
+        margin-bottom: 28px;
       }
     </style>
   </head>
@@ -129,13 +74,13 @@
       <div class="inputContainer">
         <input
           class="input"
-          placeholder="Enter Email"
+          placeholder="Email address"
           type="text"
           id="emailInput"
         />
         <input
           class="input"
-          placeholder="Enter Phone"
+          placeholder="Phone number"
           type="text"
           id="phoneInput"
         />
@@ -146,36 +91,142 @@
           type="text"
           id="codeInput"
         />
-        <button class="button" role="button" id="button" onclick="verifyCode()">
+
+        <button
+          disabled
+          class="button"
+          role="button"
+          id="button"
+          onclick="verifyCode()"
+        >
           Redeem
         </button>
 
-        <div style="width: 5rem; height: 100%; display: block">
-          <i
-            class="material-icons md-48 symbolClose"
+        <div style="width: 100%; height: 100%; display: block">
+          <div
             style="
-              color: red;
-              font-size: 32px;
-              display: none;
-              margin-left: 24px;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
             "
-            >close</i
           >
-          <i
-            class="material-icons symbolCheck"
-            style="
-              color: green;
-              font-size: 32px;
-              display: none;
-              margin-left: 24px;
-            "
-            >check</i
-          >
+            <p class="response"></p>
+            <i
+              class="material-icons md-48 symbolClose"
+              style="
+                color: red;
+                font-size: 32px;
+                display: none;
+                margin-left: 24px;
+              "
+              >close</i
+            >
+            <i
+              class="material-icons symbolCheck"
+              style="
+                color: green;
+                font-size: 32px;
+                display: none;
+                margin-left: 24px;
+              "
+              >check</i
+            >
+          </div>
         </div>
       </div>
 
-      <p class="response"></p>
       <p class="loading" style="visibility: hidden">Loading ...</p>
     </div>
   </body>
+
+  <script>
+    function resetValues() {
+      const messageElement = document.getElementsByClassName("response")[0];
+      const symbolCheck = document.getElementsByClassName("symbolCheck")[0];
+      const symbolClose = document.getElementsByClassName("symbolClose")[0];
+
+      messageElement.innerText = "";
+      symbolCheck.style.display = "none";
+      symbolClose.style.display = "none";
+    }
+
+    function verifyCode() {
+      const inputCode = document.getElementById("codeInput").value;
+      const inputEmail = document.getElementById("emailInput").value;
+      const inputPhone = document.getElementById("phoneInput").value;
+
+      const messageElement = document.getElementsByClassName("response")[0];
+      const symbolCheck = document.getElementsByClassName("symbolCheck")[0];
+      const symbolClose = document.getElementsByClassName("symbolClose")[0];
+      const loading = document.getElementsByClassName("loading")[0];
+      loading.style.visibility = "visible";
+
+      const data = {
+        redeemCode: inputCode,
+        email: inputEmail,
+        phone: inputPhone,
+      };
+
+      fetch(
+        //"http://localhost:3000/.netlify/functions/app/verifyCode",
+        "https://shopify-user-data.netlify.app/.netlify/functions/app/verifyCode",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          loading.style.visibility = "hidden";
+          const isVerified = response.value;
+          if (isVerified) {
+            messageElement.innerText = "Product verified.";
+            symbolCheck.style.display = "block";
+          } else {
+            messageElement.innerText = "Product not verified.";
+            symbolClose.style.display = "block";
+          }
+
+          setTimeout(() => {
+            resetValues();
+          }, 5000);
+        })
+        .catch(() => {
+          loading.style.visibility = "hidden";
+          messageElement.innerText = "Server Error";
+        });
+    }
+
+    const emailElment = document.getElementById("emailInput");
+    const phoneElement = document.getElementById("phoneInput");
+    const codeElement = document.getElementById("codeInput");
+    const buttonElement = document.getElementById("button");
+    buttonElement.style;
+
+    emailElment.addEventListener("input", handleChange);
+    phoneElement.addEventListener("input", handleChange);
+    codeElement.addEventListener("input", handleChange);
+
+    function handleChange() {
+      if (
+        emailElment.value.length > 0 &&
+        phoneElement.value.length > 0 &&
+        codeElement.value.length > 0
+      ) {
+        buttonElement.disabled = false;
+        buttonElement.style.cursor = "pointer";
+        buttonElement.style.opacity = 1;
+        console.log("AI button enabled");
+      } else {
+        buttonElement.disabled = true;
+        buttonElement.style.cursor = "not-allowed";
+        buttonElement.style.opacity = 0.5;
+        console.log("AI button disabled");
+      }
+    }
+  </script>
 </html>

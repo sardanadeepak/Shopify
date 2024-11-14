@@ -13,7 +13,7 @@ router.post("/verifyCode", async (req, res) => {
   const code = req.body.redeemCode;
   const email = req.body.email;
   const phone = req.body.phone;
-  const filepath = path.resolve(__dirname + "/data.txt");
+  const filepath = path.resolve(__dirname + "/codes.txt");
 
   await UserSchema.create({
     email: email,
@@ -27,7 +27,9 @@ router.post("/verifyCode", async (req, res) => {
       console.log(err.message);
       return res.status(404).send("File Error");
     }
-    const inputValues = data.split("\n").map((num) => num);
+    const inputValues = data
+      .split(",")
+      .map((num) => num.replaceAll('"', "").trim());
 
     if (inputValues.includes(code)) {
       const findCode = await Code.findOne({
@@ -48,15 +50,16 @@ router.post("/verifyCode", async (req, res) => {
             value: true,
           });
         } else {
-          return res.status(404).json({
+          return res.status(400).json({
             value: false,
+            message: "Code expired",
           });
         }
       }
     } else {
-      console.log("AI else condition : ", inputValues.includes(code));
-      return res.status(404).json({
+      return res.status(400).json({
         value: false,
+        message: "Unable to validate code",
       });
     }
   });
